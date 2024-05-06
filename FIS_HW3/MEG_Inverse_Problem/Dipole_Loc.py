@@ -54,7 +54,8 @@ ax.set_box_aspect([1, 1, 1])  # This will make the axes equally spaced
 # Scatter plot for MEG sensors with numbers
 for i, (xi, yi, zi) in enumerate(zip(rq[:,0], rq[:,1], rq[:,2])):
     ax.scatter(xi, yi, zi, color='b')
-    # ax.text(xi, yi, zi, f'{i+1}', color='black', fontsize=8)
+    if(i == 104):
+        ax.text(xi, yi, zi, f'{i+1}', color='black', fontsize=9)
 
 ax.quiver(rq_0[0], rq_0[1], rq_0[2], q_0[0], q_0[1], q_0[2], color='r', length=0.03,
           normalize=True, arrow_length_ratio=0.5)
