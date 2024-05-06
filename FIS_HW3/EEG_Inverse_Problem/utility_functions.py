@@ -7,22 +7,27 @@ from scipy.special import legendre
 mu = 4 * math.pi * pow(10, -7)
 
 def cartesian_to_polar(x, y, z):
-    r = np.sqrt(pow(x,2) + pow(y,2) + pow(z,2))
-    theta = np.arccos(z / r)
-    phi = np.arctan2(y, x)
+    r = np.round(np.sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2)),4)
+    theta = np.round(np.arccos(z / r),4)
+    phi = np.round(np.arctan2(y, x),4)
+
     return r, theta, phi
 
 
 def Calc_L(theta, phi, theta_0, phi_0, j, d_n, b, xi, sigma):
-
+    
     P_j1 = lpmv(1, j, np.cos(theta - theta_0))
     P_j = j * legendre(j)(np.cos(theta - theta_0))
+    P_j = np.round(P_j, 4)
+    P_j1 = np.round(P_j1, 4)
     M = np.array([(P_j1 * np.cos(phi - phi_0)), (P_j1 *
                  np.sin(phi - phi_0)), (P_j * np.cos(theta - theta_0))])
+    M = np.round(M,4)
     a_ij = (((2*j + 1) * (pow(b, j-1)) / (j * 4 * np.pi * sigma))
-            * ((xi * pow((2*j + 1),2)) / (d_n * (j + 1)))) * M
+            * ((xi * pow((2*j + 1), 2)) / (d_n * (j + 1)))) * M
 
     return a_ij
+
 
 
 def d_n(n, xi, r_brain, r_skull, r_scalp):

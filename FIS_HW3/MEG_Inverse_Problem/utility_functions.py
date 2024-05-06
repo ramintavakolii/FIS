@@ -27,7 +27,7 @@ def Conv_coordinates(phi, theta, radius):
 
 def Calc_G(er, r, rq):
 
-    a_ij = (mu / (4 * np.pi)) * (np.cross(er, rq)) / (np.linalg.norm(r - rq))
+    a_ij = (mu / (4 * np.pi)) * (np.cross(er, rq)) / pow((np.linalg.norm(r - rq)),3)
 
     return a_ij
 
