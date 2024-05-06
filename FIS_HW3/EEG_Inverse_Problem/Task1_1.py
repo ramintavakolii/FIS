@@ -7,8 +7,8 @@ import math
 
 # ---------------------------------------- Loading Dipole and EEG_Lead_Field_1 ------------------------------------------------
 
-data1 = np.load("Dataset/EEG/Dipole_coordinates_2.npz")  # Loading Dipole
-data2 = np.load("Dataset/EEG/EEG_Lead_Field_1.npz")  # Loading EEG_Lead_Field_1
+data1 = np.load("Dataset/EEG/Dipole_coordinates_2.npz")     # Loading Dipole
+data2 = np.load("Dataset/EEG/EEG_Lead_Field_1.npz")         # Loading EEG_Lead_Field_1
 data3 = np.load("Dataset/EEG/EEG_Measurement_Vector.npz")
 
 rq_x = data1['x']
@@ -18,26 +18,27 @@ rq = data1['rq']
 q_0 = np.array([0, 0, 1])
 
 L = data2['L']
+
 V = data3['V']
 
 Rank = matrix_rank(L)
 print("Rank of L = ", Rank)
-print(L.shape)
+print("Shape of L = ", L.shape)
 
 # ------------------------------------------ calculate Current_source_vector ---------------------------------------------------
 
-# q = L.T @ np.linalg.inv(L@L.T) @ V
-q = np.linalg.pinv(L) @ V
-print(q)
+q = L.T @ np.linalg.inv(L@L.T) @ V
+# q = np.linalg.pinv(L) @ V
 norm_q = np.array(np.zeros(105,))
 
 # calculate Magnitude of each Current_source
 for i in range(0, 105):
     j = 3*i
     norm_q[i] = math.sqrt(q[0+j]**2 + q[1+j]**2 + q[2+j]**2)
-print(norm_q.shape)
 q1 = np.reshape(q, (105, 3))
-print(q1[104, :])
+print("q_0 vector = ", q1[104, :])
+print("diapole number = ", np. argmax(norm_q), "\nmaximum norm_q = ",
+      np.max(norm_q), "\nq_0 norm = ", norm_q[104])
 
 # ------------------------------------------ Visiualize Current_source_vector -------------------------------------------------
 
@@ -68,7 +69,7 @@ cbar = plt.colorbar(scatter, pad=0.05)
 cbar.set_label('norm_q')  # change
 
 
-ax.quiver(rq[104, 0], rq[104, 1], rq[104, 2], q1[104,0], q1[104,1], q1[104,2], color='r', length=0.03,
+ax.quiver(rq[104, 0], rq[104, 1], rq[104, 2], q1[104, 0], q1[104, 1], q1[104, 2], color='r', length=0.03,
           normalize=True, arrow_length_ratio=0.5)
 # -------------------------------------  Plot the hemisphere surface ------------------------------------------
 

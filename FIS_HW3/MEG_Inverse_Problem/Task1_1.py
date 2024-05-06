@@ -21,28 +21,31 @@ G = data2['G']
 B_r = data3['B']
 
 Rank = matrix_rank(G)
+print("Shape of G = ", G.shape)
 print("Rank of G = ", Rank)
 
 # ------------------------------------------ calculate Current_source_vector ---------------------------------------------------
 
 q = G.T @ np.linalg.inv(G@G.T) @ B_r
 # q = np.linalg.pinv(G) @ B_r
-print(q.shape)
+
 norm_q = np.array(np.zeros(105,))
 
 # calculate Magnitude of each Current_source
 for i in range(0, 105):
     j = 3*i
     norm_q[i] = math.sqrt(q[0+j]**2 + q[1+j]**2 + q[2+j]**2)
-print(norm_q.shape)
+
 q1 = np.reshape(q, (105, 3))
-print(q1[104, :])
+print("q_0 vector = ", q1[104, :])
+print("diapole number = ", np. argmax(norm_q), "\nmaximum norm_q = ",
+      np.max(norm_q), "\nq_0 norm = ", norm_q[104])
 
 # ------------------------------------------ Visiualize Current_source_vector -------------------------------------------------
 
 fig = plt.figure(figsize=(9, 6))
 ax = fig.add_subplot(111, projection='3d')
-plt.title('Dataset/MEG/Magnitude of Current Sources')       # change
+plt.title('Magnitude of Current Sources', c='r')
 
 # Set size of each axis
 ax.set_box_aspect([1, 1, 1])  # This will make the axes equally spaced
@@ -64,10 +67,10 @@ scatter = ax.scatter(rq_x, rq_y, rq_z, c=norm_q, cmap='viridis',
 
 # Adding color bar
 cbar = plt.colorbar(scatter, pad=0.05)
-cbar.set_label('norm_q')  # change
+cbar.set_label('norm_q')
 
 
-ax.quiver(rq[104, 0], rq[104, 1], rq[104, 2], q1[104,0], q1[104,1], q1[104,2], color='r', length=0.03,
+ax.quiver(rq[104, 0], rq[104, 1], rq[104, 2], q1[104, 0], q1[104, 1], q1[104, 2], color='r', length=0.04,
           normalize=True, arrow_length_ratio=0.5)
 # -------------------------------------  Plot the hemisphere surface ------------------------------------------
 
@@ -79,10 +82,11 @@ x_hemisphere = radius * np.outer(np.cos(u), np.sin(v))
 y_hemisphere = radius * np.outer(np.sin(u), np.sin(v))
 z_hemisphere = radius * np.outer(np.ones(np.size(u)), np.cos(v))
 
-ax.plot_surface(x_hemisphere, y_hemisphere, z_hemisphere, color='r', alpha=0.1)
+ax.plot_surface(x_hemisphere, y_hemisphere,
+                z_hemisphere, color='b', alpha=0.05)
 
-ax.set_xlabel('X (m)')
-ax.set_ylabel('Y (m)')
-ax.set_zlabel('Z (m)')
+ax.set_xlabel('X (m)', c='b')
+ax.set_ylabel('Y (m)', c='b')
+ax.set_zlabel('Z (m)', c='b')
 
 plt.show()
