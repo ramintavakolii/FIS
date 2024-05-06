@@ -9,7 +9,7 @@ from scipy.interpolate import griddata
 # ---------------------------------------- Loading Dipole and MEG_Lead_Field_1 ------------------------------------------------
 
 data1 = np.load("Dataset/MEG/Dipole_coordinates_2.npz")  # Loading Dipole
-data2 = np.load("Dataset/MEG/MEG_Laed_Field_2.npz")  # Loading MEG_Lead_Field_1
+data2 = np.load("Dataset/MEG/MEG_Lead_Field_2.npz")  # Loading MEG_Lead_Field_1
 data3 = np.load("Dataset/MEG/MEG_Measurement_Vector.npz")
 
 rq = data1['rq']
@@ -21,14 +21,14 @@ q_0 = np.array([0, 0, 1])
 print(q_0.shape)
 G = data2['G']
 B_r = data3['B']
-
-Rank = matrix_rank(G)
+G1 = G
+Rank = matrix_rank(G1)
 print("Rank of G = ", Rank)
 
 # ------------------------------------------ calculate Current_source_vector ---------------------------------------------------
-
-q = np.linalg.pinv(G) @ B_r
-print('shap of q = ', q.shape)
+# q = np.linalg.pinv(G) @ B_r
+q = (np.linalg.pinv(G.T@G)@G.T) @ B_r
+print('shape of q = ', q.shape)
 
 # calculate Magnitude of each Current_source
 norm_q = math.sqrt(q[0]**2 + q[1]**2 + q[2]**2)
@@ -47,9 +47,9 @@ theta_rad = np.rad2deg(theta)
 # Calculate relative_q0_error
 relative_q0_error = np.sqrt(
     np.sum((q - q_0)**2, axis=0)) / np.sqrt(np.sum(q_0**2, axis=0))
-print('The relative q0 error =', relative_q0_error)
+print('The relative q0 error =', np.round(relative_q0_error, 6))
 
 # Calculate relative_q_error
 relative_q_error = np.sqrt(
     np.sum((q - q_0)**2, axis=0)) / np.sqrt(np.sum(q_0**2, axis=0))
-print('The relative q error =', relative_q_error)
+print('The relative q error =', np.round(relative_q_error, 6))

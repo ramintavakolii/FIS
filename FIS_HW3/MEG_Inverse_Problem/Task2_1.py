@@ -7,8 +7,9 @@ import math
 
 # ---------------------------------------- Loading Dipole and MEG_Lead_Field_1 ------------------------------------------------
 
-data1 = np.load("Dataset/MEG/Dipole_coordinates_2.npz")  # Loading Dipole
-data2 = np.load("Dataset/MEG/MEG_Laed_Field_2.npz")  # Loading MEG_Lead_Field_1
+data1 = np.load("Dataset/MEG/Dipole_coordinates_2.npz")      # Loading Dipole
+# Loading MEG_Lead_Field_2
+data2 = np.load("Dataset/MEG/MEG_Lead_Field_2.npz")
 data3 = np.load("Dataset/MEG/MEG_Measurement_Vector.npz")
 
 rq_x = data1['x']
@@ -18,6 +19,7 @@ rq = data1['rq']
 q_0 = np.array([0, 0, 1])
 
 G = data2['G']
+print(G)
 B_r = data3['B']
 
 Rank = matrix_rank(G)
@@ -25,20 +27,20 @@ print("Rank of G = ", Rank)
 
 # ------------------------------------------ calculate Current_source_vector ---------------------------------------------------
 
-q = np.linalg.pinv(G) @ B_r
-# q = (np.linalg.inv(G.T@G)@G.T) @ B_r
-print('shap of q = ',q.shape)
-print('q = ',q)
+# q = np.linalg.pinv(G) @ B_r
+q = (np.linalg.inv(G.T@G)@G.T) @ B_r
+print('shap of q = ', q.shape)
+print('q = ', q)
 
 # calculate Magnitude of each Current_source
 norm_q = math.sqrt(q[0]**2 + q[1]**2 + q[2]**2)
-print('norm of q = ',norm_q)
+print('norm of q = ', norm_q)
 
 # ------------------------------------------ Visiualize Current_source_vector -------------------------------------------------
 
 fig = plt.figure(figsize=(9, 6))
 ax = fig.add_subplot(111, projection='3d')
-plt.title('Magnitude of Current Sources')       # change
+plt.title('Magnitude of Current Sources',c='r')       # change
 
 # Set size of each axis
 ax.set_box_aspect([1, 1, 1])  # This will make the axes equally spaced
@@ -51,12 +53,10 @@ ax.set_xticks(np.arange(-0.08, 0.08, 0.04))
 ax.set_yticks(np.arange(-0.08, 0.08, 0.04))
 ax.set_zticks(np.arange(-0.08, 0.08, 0.04))
 
-q_min = np.min(q)
-q_max = np.max(q)
 
 # Plotting scatter with actual values
 scatter = ax.scatter(rq[104, 0], rq[104, 1], rq[104, 2], c=norm_q, cmap='viridis',
-                     s=50, vmin=q_min, vmax=q_max)
+                     s=50)
 
 # Adding color bar
 cbar = plt.colorbar(scatter, pad=0.05)
@@ -77,8 +77,8 @@ z_hemisphere = radius * np.outer(np.ones(np.size(u)), np.cos(v))
 
 ax.plot_surface(x_hemisphere, y_hemisphere, z_hemisphere, color='r', alpha=0.1)
 
-ax.set_xlabel('X (m)')
-ax.set_ylabel('Y (m)')
-ax.set_zlabel('Z (m)')
+ax.set_xlabel('X (m)',c='b')
+ax.set_ylabel('Y (m)',c='b')
+ax.set_zlabel('Z (m)',c='b')
 
 plt.show()
